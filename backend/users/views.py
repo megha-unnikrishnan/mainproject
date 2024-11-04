@@ -675,7 +675,7 @@ class PasswordResetRequestView(APIView):
         user_id = user.id  # Use user.id directly
 
         # Link should redirect to the frontend URL
-        reset_link = request.build_absolute_uri(f'http://localhost:3000/reset-password/{user_id}/{token}/')
+        reset_link = request.build_absolute_uri(f'http://localhost/reset-password/{user_id}/{token}/')
 
         subject = 'Password Reset Request'
         message = f'Hi {user.first_name},\n\n' \

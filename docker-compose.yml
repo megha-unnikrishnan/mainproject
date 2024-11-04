@@ -3,7 +3,9 @@
 
 
 
-services:
+# version: '3.8'  # You can omit this line since it's now deprecated
+
+services: 
   db:
     image: postgres:16
     environment:
@@ -25,7 +27,7 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     command: >
-      sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+      sh -c "python manage.py migrate && python manage.py collectstatic --noinput && gunicorn backend.wsgi:application --bind 0.0.0.0:8000"
     volumes:
       - ./backend:/app
     ports:
@@ -34,7 +36,7 @@ services:
       - db
     environment:
       DEBUG: "True"  # Corrected syntax
-      DATABASE_URL: "postgres://postgres:0000@localhost:5432/talkstream"  # Corrected syntax
+      DATABASE_URL: "postgres://postgres:5050@db:5432/socialmedia"  # Ensure this matches your DB config
       DJANGO_ALLOWED_HOSTS: "localhost 127.0.0.1 [::1]"  # Corrected syntax
     env_file:  # Add this line to specify the .env file
       - .env   # Path to your .env file
@@ -53,6 +55,85 @@ services:
       - CHOKIDAR_USEPOLLING=true
     command: npm start
 
+  nginx:
+    image: nginx:latest
+    volumes:
+      - ./frontend/build:/usr/share/nginx/html
+      - ./backend/nginx/nginx.conf:/etc/nginx/nginx.conf  # Adjust the path here
+    
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+      - frontend
+
 volumes:
   postgres_data:
+
+
+
+
+
+# version: '3.8'
+
+# services: 
+#   db:
+#     image: postgres:16
+#     environment:
+#       POSTGRES_DB: socialmedia
+#       POSTGRES_USER: new_user
+#       POSTGRES_PASSWORD: 5050
+#     volumes:
+#       - postgres_data:/var/lib/postgresql/data
+#     ports:
+#       - "5433:5432"
+
+#   redis:
+#     image: redis:latest
+#     ports:
+#       - "6379:6379"
+
+#   backend:
+#     build:
+#       context: ./backend
+#       dockerfile: Dockerfile
+#     command: >
+#       sh -c "python manage.py migrate && gunicorn backend.wsgi:application --bind 0.0.0.0:8000"
+#     volumes:
+#       - ./backend:/app
+#     ports:
+#       - "8000:8000"
+#     depends_on:
+#       - db
+#     environment:
+#       DEBUG: "True"
+#       DATABASE_URL: "postgres://new_user:5050@db:5432/socialmedia"
+#       DJANGO_ALLOWED_HOSTS: "localhost 127.0.0.1 [::1]"
+#     env_file:
+#       - .env
+#     working_dir: /app
+
+#   frontend:
+#     build:
+#       context: ./frontend
+#       dockerfile: Dockerfile
+#     volumes:
+#       - ./frontend:/app
+#     depends_on:
+#       - backend
+
+#   nginx:
+#     image: nginx:latest
+#     volumes:
+#       - ./frontend/build:/usr/share/nginx/html
+#       - ./backend/nginx/nginx.conf:/etc/nginx/nginx.conf
+#     ports:
+#       - "80:80"
+#     depends_on:
+#       - backend
+#       - frontend
+
+# volumes:
+#   postgres_data:
+
 

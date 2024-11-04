@@ -249,7 +249,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         token = email_verification_token.make_token(user)
         
         # Define your frontend base URL
-        frontend_base_url = 'http://localhost:3000'  # Replace with your actual frontend URL
+        frontend_base_url = 'http://localhost'  # Replace with your actual frontend URL
         
         # Build the verification URL for the frontend
         verification_url = f"{frontend_base_url}/verify-email/{user.id}/{token}/"

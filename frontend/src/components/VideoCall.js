@@ -12,6 +12,7 @@ import { FaVideo, FaPhoneSlash } from "react-icons/fa";
 const VideoCall = () => {
     const { userId } = useParams();  // recipient's ID
     const currentUser =  useSelector((state) => state.auth.user);
+    console.log('')
     const localVideoRef = useRef(null);
     const remoteVideoRef = useRef(null);
     const peerConnection = useRef(null);
@@ -235,7 +236,7 @@ const togglePopup = () => setPopupVisible(!isPopupVisible);
         {!isCallActive && isCallReceived && !isCaller && (
             <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex justify-center items-center z-50">
                 <div className="bg-white rounded-lg shadow-lg p-6 w-80 text-center">
-                    <p className="text-lg font-semibold mb-4">Incoming call from {userId}...</p>
+                    <p className="text-lg font-semibold mb-4">Incoming call from {currentUser}...</p>
                     <div className="flex justify-center space-x-4">
                         <button
                             onClick={acceptCall}
